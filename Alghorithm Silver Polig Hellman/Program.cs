@@ -5,6 +5,7 @@ class SilverPohligHellman
 {
     static void Main()
     {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("Алгоритм Сильвера-Полига-Хеллмана");
         Console.WriteLine("-------------------------------");
 
