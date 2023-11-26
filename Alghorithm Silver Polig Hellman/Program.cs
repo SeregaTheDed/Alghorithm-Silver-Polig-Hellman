@@ -37,14 +37,34 @@ class SilverPohligHellman
             .Select(x =>  (x.Key, new BigInteger(x.Count())))
             .ToList();
         Console.WriteLine(String.Join(", ", q1q2qn));
-        List<List<BigInteger>> tableR = BuildTableOfR(a, p, q1q2qn);
+        List<List<BigInteger>> tableR = Step1_BuildTableOfR(a, p, q1q2qn);
         tableR.Print();
+
+
 
         return BigInteger.MinusOne;
     }
 
-    static List<List<BigInteger>> BuildTableOfR(BigInteger a, BigInteger p, List<(BigInteger prime, BigInteger pow)> q1q2qn)
+    static BigInteger Step2()
     {
+        //tex:
+        //$$x\equiv\log_a{b}\equiv x_0+x_1q_i+...+x_{\alpha_{i}-1}q_i^{\alpha_{i}-1}\pmod{q_i^{\alpha_i}},$$
+        
+
+
+
+        throw new NotImplementedException();
+    }
+    static void Step2_Formula()
+    {
+        //tex:
+        //$$a^{x\cdot\frac{p-1}{q_i}} \equiv b^{\frac{p-1}{q_i}} \pmod{p}$$
+    }
+
+    static List<List<BigInteger>> Step1_BuildTableOfR(BigInteger a, BigInteger p, List<(BigInteger prime, BigInteger pow)> q1q2qn)
+    {
+        //tex:
+        //$$r_{i,j}=a^{j\cdot\frac{p-1}{q_i}}, i\in\{1,\dots,k\}, j\in\{0,\dots,q_i-1\}.$$
         List<List<BigInteger>> table = new List<List<BigInteger>>();
         foreach (var elem in q1q2qn)
         {
@@ -59,33 +79,6 @@ class SilverPohligHellman
             table.Add(row);
         }
         return table;
-    }
-
-    static BigInteger SilverPohligHellmanAlgorithm(BigInteger g, BigInteger y, BigInteger p)
-    {
-        Console.WriteLine("Шаг 1: Факторизация порядка группы");
-        List<BigInteger> primeFactors = GetPrimeFactors(p - 1);
-        Console.WriteLine($"Факторизация порядка группы (p-1): {string.Join(", ", primeFactors)}");
-
-        Console.WriteLine("Шаг 2: Решение уравнений малых порядков");
-        BigInteger x = 0;
-
-        foreach (BigInteger q in primeFactors)
-        {
-            Console.WriteLine($"Решение для подгруппы порядка {q}");
-            BigInteger alpha = FindAlpha(g, y, p, q);
-            Console.WriteLine($"alpha = {alpha}");
-
-            BigInteger beta = ExtendedEuclideanAlgorithm(g, q);
-            Console.WriteLine($"beta = {beta}");
-
-            BigInteger xq = (alpha * beta) % q;
-            Console.WriteLine($"Для подгруппы порядка {q}: x = {xq}");
-
-            x += xq * (p - 1) / q;
-        }
-
-        return x % (p - 1);
     }
 
     static List<BigInteger> GetPrimeFactors(BigInteger n)
@@ -105,56 +98,5 @@ class SilverPohligHellman
             factors.Add(n);
 
         return factors;
-    }
-
-    static BigInteger FindAlpha(BigInteger g, BigInteger y, BigInteger p, BigInteger q)
-    {
-        BigInteger alpha = 1;
-
-        while (ModuloExponentiation(g, alpha * (p - 1) / q, p) != 1 || ModuloExponentiation(y, alpha * (p - 1) / q, p) != 1)
-        {
-            alpha++;
-        }
-
-        return alpha;
-    }
-
-    static BigInteger ExtendedEuclideanAlgorithm(BigInteger a, BigInteger b)
-    {
-        BigInteger x0 = 1, x1 = 0, y0 = 0, y1 = 1;
-
-        while (b != 0)
-        {
-            BigInteger q = a / b;
-            BigInteger temp = b;
-            b = a % b;
-            a = temp;
-
-            temp = x0;
-            x0 = x1 - q * x0;
-            x1 = temp;
-
-            temp = y0;
-            y0 = y1 - q * y0;
-            y1 = temp;
-        }
-
-        return x1;
-    }
-
-    static BigInteger ModuloExponentiation(BigInteger a, BigInteger b, BigInteger m)
-    {
-        BigInteger result = 1;
-
-        while (b > 0)
-        {
-            if (b % 2 == 1)
-                result = (result * a) % m;
-
-            a = (a * a) % m;
-            b /= 2;
-        }
-
-        return result;
     }
 }
