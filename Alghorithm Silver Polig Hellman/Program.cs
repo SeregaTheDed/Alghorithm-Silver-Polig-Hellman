@@ -37,21 +37,23 @@ class SilverPohligHellman
             .Select(x =>  (x.Key, new BigInteger(x.Count())))
             .ToList();
         Console.WriteLine(String.Join(", ", q1q2qn));
-        //List<List<BigInteger>> tableR = BuildTableOfR(a, p, q1q2qn);
-        //tableR.Print();
+        List<List<BigInteger>> tableR = BuildTableOfR(a, p, q1q2qn);
+        tableR.Print();
 
         return BigInteger.MinusOne;
     }
 
-    static List<List<BigInteger>> BuildTableOfR(BigInteger a, BigInteger p, List<BigInteger> q1q2qn)
+    static List<List<BigInteger>> BuildTableOfR(BigInteger a, BigInteger p, List<(BigInteger prime, BigInteger pow)> q1q2qn)
     {
         List<List<BigInteger>> table = new List<List<BigInteger>>();
-        foreach (BigInteger qi in q1q2qn)
+        foreach (var elem in q1q2qn)
         {
+            var prime = elem.prime; 
+            var pow = elem.pow;
             List<BigInteger> row = new List<BigInteger>();
-            for (BigInteger j = 0; j < qi - 1; j++)
+            for (BigInteger j = 0; j <= prime - 1; j++)
             {
-                BigInteger cell = a.Pow(j * (p - 1) / qi);
+                BigInteger cell = BigInteger.ModPow(a, j * (p - 1) / prime, p);
                 row.Add(cell);
             }
             table.Add(row);
