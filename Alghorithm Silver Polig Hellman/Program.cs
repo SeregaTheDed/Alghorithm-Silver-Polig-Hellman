@@ -7,36 +7,29 @@ class SilverPohligHellman
 {
     static void Main()
     {
-        /*BigInteger p1 = 271;
-        BigInteger a1 = BigInteger.ModPow(
-            150 * Extension.BigIntegerModPowWithMinusOne(6, -2, p1)
-            , 90, p1);
-        Console.WriteLine(a1);*/
-        //Extension.BigIntegerModPowWithMinusOne(150, -currentX, p);
-        //https://cyberleninka.ru/article/n/primer-vychisleniya-diskretnogo-logarifma/viewer
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("Алгоритм Сильвера-Полига-Хеллмана");
         Console.WriteLine("a^x ≡ b (mod p)");
         Console.WriteLine("-------------------------------");
 
-       /* Console.Write("Введите основание (a): ");
-        BigInteger a = BigInteger.Parse(Console.ReadLine());*/
-        BigInteger a = new BigInteger(6);
-        //BigInteger a = new BigInteger(2);
+        Console.Write("Введите основание (a): ");
+        BigInteger a = BigInteger.Parse(Console.ReadLine());
 
-        /*Console.Write("Введите число (b): ");
-        BigInteger b = BigInteger.Parse(Console.ReadLine());*/
-        BigInteger b = new BigInteger(150);
-        //BigInteger b = new BigInteger(28);
+        Console.Write("Введите число (b): ");
+        BigInteger b = BigInteger.Parse(Console.ReadLine());
 
         Console.Write("Введите модуль (p): ");
-        //BigInteger p = BigInteger.Parse(Console.ReadLine());
-        BigInteger p = new BigInteger(271);
-        //BigInteger p = new BigInteger(37);
+        BigInteger p = BigInteger.Parse(Console.ReadLine());
 
-        BigInteger x = SilverPohligHellmanAlgorithmNew(a, b, p);
-
-        Console.WriteLine($"Дискретный логарифм x в уравнении {a}^x ≡ {b} (mod {p}) равен {x}");
+        try
+        {
+            BigInteger x = SilverPohligHellmanAlgorithmNew(a, b, p);
+            Console.WriteLine($"Дискретный логарифм x в уравнении {a}^x ≡ {b} (mod {p}) равен {x}");
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Ошибка во входных данных!");
+        }
     }
 
     static BigInteger SilverPohligHellmanAlgorithmNew(BigInteger a, BigInteger b, BigInteger p)
