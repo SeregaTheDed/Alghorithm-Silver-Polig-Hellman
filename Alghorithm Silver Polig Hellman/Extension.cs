@@ -11,8 +11,8 @@ namespace Alghorithm_Silver_Polig_Hellman
     {
         public static BigInteger BigIntegerModPowWithMinusOne(this BigInteger a, BigInteger b, BigInteger Modulus)
         {
-            if (b == -1)
-                return FindObratniiElement(a, Modulus);
+            if (b <= -1)
+                return BigInteger.ModPow(FindObratniiElement(a, Modulus), -b, Modulus);
             return BigInteger.ModPow(a, b, Modulus);
         }
         public static void Print(this List<List<BigInteger>> tableR)
@@ -26,7 +26,7 @@ namespace Alghorithm_Silver_Polig_Hellman
 
 
 
-        private static BigInteger FindObratniiElement(BigInteger a, BigInteger m)
+        public static BigInteger FindObratniiElement(BigInteger a, BigInteger m)
         {
             BigInteger x, y;
             BigInteger g = GCD(a, m, out x, out y);

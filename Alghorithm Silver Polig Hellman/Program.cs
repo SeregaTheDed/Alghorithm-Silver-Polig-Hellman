@@ -7,7 +7,12 @@ class SilverPohligHellman
 {
     static void Main()
     {
-        Console.WriteLine(BigInteger.ModPow(28, 18, 37));
+        /*BigInteger p1 = 271;
+        BigInteger a1 = BigInteger.ModPow(
+            150 * Extension.BigIntegerModPowWithMinusOne(6, -2, p1)
+            , 90, p1);
+        Console.WriteLine(a1);*/
+        //Extension.BigIntegerModPowWithMinusOne(150, -currentX, p);
         //https://cyberleninka.ru/article/n/primer-vychisleniya-diskretnogo-logarifma/viewer
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("Алгоритм Сильвера-Полига-Хеллмана");
@@ -16,15 +21,18 @@ class SilverPohligHellman
 
        /* Console.Write("Введите основание (a): ");
         BigInteger a = BigInteger.Parse(Console.ReadLine());*/
-        BigInteger a = new BigInteger(2);
+        BigInteger a = new BigInteger(6);
+        //BigInteger a = new BigInteger(2);
 
         /*Console.Write("Введите число (b): ");
         BigInteger b = BigInteger.Parse(Console.ReadLine());*/
-        BigInteger b = new BigInteger(28);
+        BigInteger b = new BigInteger(150);
+        //BigInteger b = new BigInteger(28);
 
         Console.Write("Введите модуль (p): ");
         //BigInteger p = BigInteger.Parse(Console.ReadLine());
-        BigInteger p = new BigInteger(37);
+        BigInteger p = new BigInteger(271);
+        //BigInteger p = new BigInteger(37);
 
         BigInteger x = SilverPohligHellmanAlgorithmNew(a, b, p);
 
@@ -49,7 +57,7 @@ class SilverPohligHellman
         }
 
 
-        return BigInteger.MinusOne;
+        return Step3_KTO(system, p);
     }
 
     static List<(BigInteger b, BigInteger p)> Step2(
@@ -67,17 +75,33 @@ class SilverPohligHellman
             var qi = q1q2qn[i].prime;
             var qi_stepen = q1q2qn[i].pow;
             BigInteger xi = 0;
+            List<BigInteger> xis = new List<BigInteger>();
             BigInteger skobochki = b;
+            BigInteger skobochki_qi_stepen = 1;
             for (int j = 0; j < qi_stepen; j++)
             {
-                BigInteger stepen = (p - 1) / BigInteger.Pow(qi, j+1);
+                BigInteger stepen = (p - 1) / BigInteger.Pow(qi, j + 1);
+
+
+                BigInteger a_stepen_result = 0;
+                for (int to_j = 0; to_j < j; to_j++)
+                {
+                    a_stepen_result += -(xis[to_j] * BigInteger.Pow(qi, to_j));
+                }
+                skobochki = b * Extension.BigIntegerModPowWithMinusOne(a, a_stepen_result, p);
+
                 BigInteger currentX = Step2_GetXi(currentRow, skobochki, stepen, p);
-                if (j != qi_stepen - 1)
-                    skobochki = skobochki * Extension.BigIntegerModPowWithMinusOne(a, -currentX, p);
+
                 //??? Нужно ли каждый раз -currentX или только в первый раз (потом без -)
-                xi += currentX * BigInteger.ModPow(qi, j, p);
+                //xi += currentX * BigInteger.ModPow(qi, j, p);
+                xis.Add(currentX);// * BigInteger.ModPow(qi, j, p));
             }
-            result.Add((xi, BigInteger.ModPow(q1q2qn[i].prime, q1q2qn[i].pow, 99999999)));//??? Магическое число...
+            BigInteger currentResult = 0;
+            for (int j = 0; j < xis.Count; j++)
+            {
+                currentResult += xis[j] * BigInteger.Pow(qi, j);
+            }
+            result.Add((currentResult, BigInteger.ModPow(q1q2qn[i].prime, q1q2qn[i].pow, 99999999)));//??? Магическое число...
         }
         return result;
     }
@@ -111,6 +135,27 @@ class SilverPohligHellman
             table.Add(row);
         }
         return table;
+    }
+
+    static BigInteger Step3_KTO(List<(BigInteger b, BigInteger p)> system, BigInteger p)
+    {
+        //tex:
+        //$${\displaystyle x=\sum _{i= 1}^{k} a_{i}M_{i} N_{i}.}$$
+        //$${\displaystyle {\begin{cases}x\equiv r_{1}{\pmod {a_{1}}},\\x\equiv r_{2}{\pmod {a_{2}}},\\\cdots \cdots \cdots \cdots \cdots \cdots \\x\equiv r_{n}{\pmod {a_{n}}}.\\\end{cases}}}$$
+
+        BigInteger M = 1;//ai=pi;
+        BigInteger result = 0;
+
+        for (int i = 0; i < system.Count; i++)
+            M *= system[i].p;
+
+        for (int i = 0; i < system.Count; i++)
+        {
+            BigInteger Mi = M / system[i].p;
+            result += system[i].b * Extension.FindObratniiElement(Mi, system[i].p) * Mi;
+        }
+
+        return result % M;
     }
 
     static List<BigInteger> GetPrimeFactors(BigInteger n)
