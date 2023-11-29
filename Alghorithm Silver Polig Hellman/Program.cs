@@ -1,6 +1,4 @@
 ﻿using Alghorithm_Silver_Polig_Hellman;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 class SilverPohligHellman
@@ -85,16 +83,14 @@ class SilverPohligHellman
 
                 BigInteger currentX = Step2_GetXi(currentRow, skobochki, stepen, p);
 
-                //??? Нужно ли каждый раз -currentX или только в первый раз (потом без -)
-                //xi += currentX * BigInteger.ModPow(qi, j, p);
-                xis.Add(currentX);// * BigInteger.ModPow(qi, j, p));
+                xis.Add(currentX);
             }
             BigInteger currentResult = 0;
             for (int j = 0; j < xis.Count; j++)
             {
                 currentResult += xis[j] * BigInteger.Pow(qi, j);
             }
-            result.Add((currentResult, BigInteger.ModPow(q1q2qn[i].prime, q1q2qn[i].pow, 99999999)));//??? Магическое число...
+            result.Add((currentResult, BigInteger.Pow(q1q2qn[i].prime, (int)q1q2qn[i].pow)));//??? Магическое число...
         }
         return result;
     }
