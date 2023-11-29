@@ -90,11 +90,11 @@ class SilverPohligHellman
             {
                 currentResult += xis[j] * BigInteger.Pow(qi, j);
             }
-            result.Add((currentResult, BigInteger.Pow(q1q2qn[i].prime, (int)q1q2qn[i].pow)));//??? Магическое число...
+            result.Add((currentResult, BigInteger.Pow(q1q2qn[i].prime, (int)q1q2qn[i].pow)));
         }
         return result;
     }
-    static BigInteger Step2_GetXi(List<BigInteger> tableRRow, 
+    static BigInteger Step2_GetXi(List<BigInteger> tableRRow,   
         BigInteger skobochki, BigInteger stepen, BigInteger p)
     {
         var temp = BigInteger.ModPow(skobochki, stepen, p);
